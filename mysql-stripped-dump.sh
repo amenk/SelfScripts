@@ -44,5 +44,5 @@ do
 done
 
 mysqldump --no-data --single-transaction -u$USER -p$PASS $DB $STRIP
-mysqldump --single-transaction --ignore-table=$DB.$SKIP1 $ignore_tables -p$PASS $DB
+mysqldump --single-transaction $ignore_tables -u$USER -p$PASS $DB
 
