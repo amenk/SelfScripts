@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Clear various magento caches. Has support for AIToc extensions
 # License: https://github.com/amenk/SelfScripts/blob/master/LICENSE.md
 
 rm -r var/full_page_cache/mage--* 2> /dev/null && { echo FPC; DONE=1; }
