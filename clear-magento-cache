@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# License: https://github.com/amenk/SelfScripts/blob/master/LICENSE.md
+
+rm -r var/full_page_cache/mage--* 2> /dev/null && { echo FPC; DONE=1; }
+rm -r var/ait_rewrite/* 2> /dev/null && { echo AIT_REWRITE; DONE=1; }
+rm -r media/css/* 2> /dev/null && { echo "MERGED CSS"; DONE=1; }
+rm -r media/js/* 2> /dev/null && { echo "MERGED JS"; DONE=1; }
+rm -r var/cache/mage--* 2> /dev/null && { echo CACHE; DONE=1; }
+
+if [ "$DONE" != "1" ]; then
+	echo "WARNING: nothing cleared"
+fi
+
