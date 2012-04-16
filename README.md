@@ -1,13 +1,13 @@
 SelfScript Script Collection
 ============================
 
-* mysql-stripped-dump.sh
+*   mysql-stripped-dump.sh
 
- Dumps a MySql database. For some unimportant tables, only the structure is dumped
+    Dumps a MySql database. For some unimportant tables, only the structure is dumped
 
-* cmc: Clear Magento Cache
+*   cmc: Clear Magento Cache
 
- Clear various magento caches. Has support for AIToc extensions
+    Clear various magento caches. Has support for AIToc extensions
 
 
 License
