@@ -11,5 +11,6 @@ rm -r var/cache/mage--* 2> /dev/null && { echo "CACHE"; DONE=1; }
 
 if [ "$DONE" != "1" ]; then
 	echo "WARNING: nothing cleared"
+	exit 1;
 fi
 
