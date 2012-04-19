@@ -1,0 +1,76 @@
+#!/bin/bash
+#
+# Starts a Selenium-RC headless environment
+# License: https://github.com/amenk/SelfScripts/blob/master/LICENSE.md
+
+#
+# BETA
+# Fixmes:
+# - We should take care of running the environment under a non-priviledged user
+
+
+#
+# Source function library.
+. /lib/lsb/init-functions
+
+
+LOG=/var/log/selenium.log
+
+DISPLAY_NO=99
+
+JAVA=/usr/bin/java
+XVFB=/usr/bin/Xvfb
+SELENIUM_JAR=/opt/selenium-server-standalone-2.20.0.jar
+FIREFOX_TEMPLATE=/home/amenk/.mozilla/firefox/aph73r3f.selenium/
+
+
+start() {
+        log_daemon_msg "Starting Xvfb"
+	daemon --dbglog=$LOG --errlog=$LOG --stdout=$LOG --stderr=$LOG\
+		--name Xvfb -- $XVFB :$DISPLAY_NO -ac -screen 0 1024x768x8
+	log_end_msg $?
+        log_daemon_msg "Starting Selenium RC"
+	daemon --dbglog=$LOG --errlog=$LOG --stdout=$LOG --stderr=$LOG\
+		 --name Selenium-RC --env=DISPLAY=$DISPLAY_NO\
+		 -- java -jar $SELENIUM_JAR  -log /var/log/selenium-debug.log -browserSideLog -firefoxProfileTemplate $FIREFOX_TEMPLATE
+	log_end_msg $?
+        return
+}
+
+stop() {
+        log_daemon_msg "Stopping Selenium RC"
+	daemon --stop --name Selenium-RC
+	log_end_msg $?
+
+	log_daemon_msg "Stopping Xvfb"
+	daemon --stop --name Xvfb
+	log_end_msg $?
+        return
+}
+
+status() {
+	daemon -v10 --running --name Xvfb
+	daemon -v10 --running --name Selenium-RC
+
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+	status
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage:  {start|stop|status|reload|restart[|probe]"
+        exit 1
+        ;;
+esac
+exit $?
