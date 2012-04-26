@@ -45,7 +45,12 @@ start() {
 	log_end_msg $?
         log_daemon_msg "Starting Selenium RC"
 	export DISPLAY=:$DISPLAY_NO
-	$NOHUP $JAVA -jar $SELENIUM_JAR -log $DEBUGLOG -browserSideLog -firefoxProfileTemplate $FIREFOX_TEMPLATE > $LOG 2>&1 & 
+	if [ -n "$DEBUGLOG" ]; then
+		DBG="-log $DEBUGLOG -browserSideLog "
+	else
+		DBG=""
+	fi
+	$NOHUP $JAVA -jar $SELENIUM_JAR $DBG-firefoxProfileTemplate $FIREFOX_TEMPLATE > $LOG 2>&1 & 
 	echo $! > $SELENIUMPIDFILE
 	log_end_msg $?
         return
