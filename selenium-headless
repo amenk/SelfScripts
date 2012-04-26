@@ -7,22 +7,25 @@
 # BETA
 # Fixmes:
 # - We should take care of running the environment under a non-priviledged user
-
-
+# you have to create an /etc/selenium-headless.conf containing something like that:
+#
+#LOG=/var/log/selenium.log
+#DEBUGLOG=/var/log/selenium-debug.log
+#SELENIUM_JAR=/opt/selenium-server-standalone-2.20.0.jar
+#FIREFOX_TEMPLATE=/home/amenk/.mozilla/firefox/aph73r3f.selenium/
+#
 #
 # Source function library.
 . /lib/lsb/init-functions
 
 
-LOG=/var/log/selenium.log
+. /etc/selenium-headless.conf
 
 DISPLAY_NO=99
-
 JAVA=/usr/bin/java
 XVFB=/usr/bin/Xvfb
-SELENIUM_JAR=/opt/selenium-server-standalone-2.20.0.jar
-FIREFOX_TEMPLATE=/home/amenk/.mozilla/firefox/aph73r3f.selenium/
-
+NOHUP=/usr/bin/nohup
+SELENIUMPIDFILE=/var/run/Selenium-RC.pid
 
 start() {
         log_daemon_msg "Starting Xvfb"
@@ -30,16 +33,18 @@ start() {
 		--name Xvfb -- $XVFB :$DISPLAY_NO -ac -screen 0 1024x768x8
 	log_end_msg $?
         log_daemon_msg "Starting Selenium RC"
-	daemon --dbglog=$LOG --errlog=$LOG --stdout=$LOG --stderr=$LOG\
-		 --name Selenium-RC --env=DISPLAY=$DISPLAY_NO\
-		 -- java -jar $SELENIUM_JAR  -log /var/log/selenium-debug.log -browserSideLog -firefoxProfileTemplate $FIREFOX_TEMPLATE
+	export DISPLAY=:$DISPLAY_NO
+	$NOHUP $JAVA -jar $SELENIUM_JAR -log $DEBUGLOG -browserSideLog -firefoxProfileTemplate $FIREFOX_TEMPLATE > $LOG 2>&1 & 
+	echo $! > $SELENIUMPIDFILE
 	log_end_msg $?
         return
 }
 
 stop() {
         log_daemon_msg "Stopping Selenium RC"
-	daemon --stop --name Selenium-RC
+	SELENIUMPID=`cat $SELENIUMPIDFILE`
+	kill $SELENIUMPID
+	rm $SELENIUMPIDFILE
 	log_end_msg $?
 
 	log_daemon_msg "Stopping Xvfb"
@@ -50,8 +55,19 @@ stop() {
 
 status() {
 	daemon -v10 --running --name Xvfb
-	daemon -v10 --running --name Selenium-RC
 
+	if [ ! -e $SELENIUMPIDFILE ]; then
+		echo "Selenium not running"
+		return
+	fi
+	
+	SELENIUMPID=`cat $SELENIUMPIDFILE`
+
+	if [ -d /proc/$SELENIUMPID ]; then
+		echo "Selenium running with PID $SELENIUMPID"
+	else
+		echo "Selenium not running: But PID file with PID $SELENIUMPID exists"
+	fi
 }
 
 case "$1" in
@@ -69,7 +85,7 @@ case "$1" in
         start
         ;;
     *)
-        echo "Usage:  {start|stop|status|reload|restart[|probe]"
+        echo "Usage:  {start|stop|status|restart"
         exit 1
         ;;
 esac
