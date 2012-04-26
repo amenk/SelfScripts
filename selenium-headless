@@ -50,19 +50,18 @@ start() {
 	else
 		DBG=""
 	fi
-	$NOHUP $JAVA -jar $SELENIUM_JAR $DBG-firefoxProfileTemplate $FIREFOX_TEMPLATE > $LOG 2>&1 & 
-	echo $! > $SELENIUMPIDFILE
+	daemon --dbglog=$LOG --errlog=$LOG --stdout=$LOG --stderr=$LOG\
+		--name Selenium-RC -i --env=DISPLAY=$DISPLAY_NO\
+		-- $JAVA -jar $SELENIUM_JAR $DBG-firefoxProfileTemplate $FIREFOX_TEMPLATE
 	log_end_msg $?
         return
 }
 
 stop() {
         log_daemon_msg "Stopping Selenium RC"
-	SELENIUMPID=`cat $SELENIUMPIDFILE`
-	kill $SELENIUMPID
-	rm $SELENIUMPIDFILE
+	daemon --stop --name Selenium-RC
 	log_end_msg $?
-
+	
 	log_daemon_msg "Stopping Xvfb"
 	daemon --stop --name Xvfb
 	log_end_msg $?
@@ -71,19 +70,7 @@ stop() {
 
 status() {
 	daemon -v10 --running --name Xvfb
-
-	if [ ! -e $SELENIUMPIDFILE ]; then
-		echo "Selenium not running"
-		return
-	fi
-	
-	SELENIUMPID=`cat $SELENIUMPIDFILE`
-
-	if [ -d /proc/$SELENIUMPID ]; then
-		echo "Selenium running with PID $SELENIUMPID"
-	else
-		echo "Selenium not running: But PID file with PID $SELENIUMPID exists"
-	fi
+	daemon -v10 --running --name Selenium-RC
 }
 
 case "$1" in
