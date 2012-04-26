@@ -11,8 +11,8 @@
 #
 #LOG=/var/log/selenium.log
 #DEBUGLOG=/var/log/selenium-debug.log
-#SELENIUM_JAR=/opt/selenium-server-standalone-2.20.0.jar
-#FIREFOX_TEMPLATE=/home/amenk/.mozilla/firefox/aph73r3f.selenium/
+#SELENIUM_JAR=/opt/selenium-server-standalone.jar
+#FIREFOX_TEMPLATE=/home/myuser/.mozilla/firefox/abcdefg.selenium/
 #
 #
 # Source function library.
