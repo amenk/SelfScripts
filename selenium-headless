@@ -44,7 +44,6 @@ start() {
 		--name Xvfb -- $XVFB :$DISPLAY_NO -ac -screen 0 1024x768x8
 	log_end_msg $?
         log_daemon_msg "Starting Selenium RC"
-	export DISPLAY=:$DISPLAY_NO
 	if [ -n "$DEBUGLOG" ]; then
 		DBG="-log $DEBUGLOG -browserSideLog "
 	else
