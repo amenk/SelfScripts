@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Extracts git commits that contain a certain text (for example ticket number) in the commit message to .patch files
+# License: https://github.com/amenk/SelfScripts/blob/master/LICENSE.md
+
+echo "Enter string to grep in the git log message, for example a ticket number:";
+read SEARCH
+
+COMMITS=`git log --no-color --pretty=oneline | grep "$SEARCH" | cut -f1 -d" "`
+
+NO=1
+
+for COMMIT in $COMMITS
+do
+	git format-patch -1 $COMMIT --start-number=$NO
+ 	NO=$(($NO+1))
+done
+
+
+

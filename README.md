@@ -9,6 +9,9 @@ SelfScript Script Collection
 
     Clear various magento caches. Has support for AIToc extensions.
 
+*   git-extract-patches
+
+    Extracts git commits that contain a certain text (for example ticket number) in the commit message to .patch files
 
 License
 =======
