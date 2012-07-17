@@ -1,0 +1,80 @@
+#!/bin/bash
+
+
+# Exports a database while stripping the data of some tables
+# Useful for setting up a development system that does not need log-data and so on
+# 
+# Alexander Menk, 13. Apr 2012
+# License: https://github.com/amenk/SelfScripts/blob/master/LICENSE.md
+
+
+### Configuration
+
+DB=
+USER=
+PASS=
+
+usage()
+{
+cat << EOF
+usage: $0 options table1 table2 tabl3 ...
+
+Exports a mysql database, stripping the data from table1, table2, ...
+
+OPTIONS:
+   -h      Show this message
+   -d      Database
+   -u      User
+   -p      Password
+EOF
+}
+
+OPTIND=1
+
+while getopts “hd:u:p:” OPTION
+do
+     case $OPTION in
+         h)
+             usage
+             exit 1
+             ;;
+         d)
+             DB=$OPTARG
+             ;;
+         u)
+             USER=$OPTARG
+             ;;
+         p)
+             PASS=$OPTARG
+             ;;
+         ?)
+             usage
+             exit
+             ;;
+     esac
+done
+
+if [[ -z $DB ]] || [[ -z $USER ]] || [[ -z $PASS ]]
+then
+     usage
+     exit 1
+fi
+
+
+shift $(($OPTIND - 1))
+
+# Tables to strip (export only structure)
+STRIP=$*
+
+### Main Program
+
+ignore_tables=""
+
+for I in $STRIP
+do
+	ignore_tables="${ignore_tables} --ignore-table=$DB.$I"
+done
+
+mysqldump --no-data --single-transaction -u$USER -p$PASS $DB $STRIP
+mysqldump --single-transaction $ignore_tables -u$USER -p$PASS $DB
+

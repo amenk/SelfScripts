@@ -6,7 +6,7 @@
 echo "Enter string to grep in the git log message, for example a ticket number:";
 read SEARCH
 
-COMMITS=`git log --no-color --pretty=oneline | grep "$SEARCH" | cut -f1 -d" "`
+COMMITS=`git log --topo-order --reverse --no-color --pretty=oneline | grep "$SEARCH" | cut -f1 -d" "`
 
 NO=1
 
