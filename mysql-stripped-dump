@@ -17,9 +17,13 @@ PASS=
 usage()
 {
 cat << EOF
-usage: $0 options table1 table2 tabl3 ...
+usage: $0 options table1 table2 table3 ...
 
 Exports a mysql database, stripping the data from table1, table2, ...
+
+Example for a magento database:
+
+$0 -d magento_db -u myuser -p mypass report_event
 
 OPTIONS:
    -h      Show this message
