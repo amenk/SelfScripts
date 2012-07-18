@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Extracts the current app version number form a file app/etc/version.txt,
+# commits it, creates at tag and pushes the tags
+# License: https://github.com/amenk/SelfScripts/blob/master/LICENSE.md
+
+
+cat app/etc/version.txt
+read
+
+git commit app/etc/version.txt -m "Raised to version `cat app/etc/version.txt`"
+git tag -a `cat app/etc/version.txt` -m `cat app/etc/version.txt`
+
+git push --tags 
