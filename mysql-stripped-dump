@@ -13,6 +13,7 @@
 DB=
 USER=
 PASS=
+HOST=localhost
 
 usage()
 {
@@ -23,10 +24,11 @@ Exports a mysql database, stripping the data from table1, table2, ...
 
 Example for a magento database:
 
-$0 -d magento_db -u myuser -p mypass report_event
+$0 -H localhost -d magento_db-u myuser -p mypass report_event
 
 OPTIONS:
    -h      Show this message
+   -H      Host (default: localhost)
    -d      Database
    -u      User
    -p      Password
@@ -35,12 +37,15 @@ EOF
 
 OPTIND=1
 
-while getopts “hd:u:p:” OPTION
+while getopts “hH:d:u:p:” OPTION
 do
      case $OPTION in
          h)
              usage
              exit 1
+             ;;
+         H)
+             HOST=$OPTARG
              ;;
          d)
              DB=$OPTARG
@@ -79,6 +84,6 @@ do
 	ignore_tables="${ignore_tables} --ignore-table=$DB.$I"
 done
 
-mysqldump --no-data --single-transaction -u$USER -p$PASS $DB $STRIP
-mysqldump --single-transaction $ignore_tables -u$USER -p$PASS $DB
+mysqldump --no-data --single-transaction -H$HOST -u$USER -p$PASS $DB $STRIP
+mysqldump --single-transaction $ignore_tables -H$HOST -u$USER -p$PASS $DB
 
