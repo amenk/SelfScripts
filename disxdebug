@@ -1,0 +1,7 @@
+#!/bin/bash -e
+
+sudo php5dismod xdebug
+sudo service apache2 restart
+
+echo "OFF - fast" | figlet
+

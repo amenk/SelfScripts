@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+sudo /usr/sbin/php5enmod xdebug
+sudo /usr/sbin/service apache2 restart
+
+echo "ON" | figlet 
