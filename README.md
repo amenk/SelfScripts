@@ -13,6 +13,10 @@ SelfScript Script Collection
 
     Extracts git commits that contain a certain text (for example ticket number) in the commit message to .patch files
 
+*   exif-date-rename.py
+
+    Rename Pictures (JPEG Photos) to contain the shot-date in the name. The use case is to pass those files to a photo printing company and have the date printed on the back.
+
 License
 =======
 
