@@ -3,7 +3,7 @@
 # Provides a webinterface to make commits
 # based on
 # https://github.com/msoap/shell2http
-# v0.5.0
+# v0.5.1
 # https://github.com/amenk/SelfScripts
 
-shell2http -basic-auth="commit:bot" -form -include-stderr -show-errors  / 'echo "<html><body><pre>"; irobo db:dump && git add -A . && git status && echo "</pre><form action="/commit" method="POST"><input type=\"text\" name=\"m\" value=\"Content Commit by ...\" size="50"><input type=\"submit\"></form><a href="/diff">diff</a></body></html>"'  /commit  'git commit -m "$v_m" && git push' /diff "git diff"
+shell2http -basic-auth="commit:bot" -form -include-stderr -show-errors  / 'echo "<html><body><pre>"; irobo db:dump && git add -A . && git status && echo "</pre><form action="/commit" method="POST"><input type=\"text\" name=\"m\" value=\"Content Commit by ...\" size="50"><input type=\"submit\"></form><a href="/diff">diff</a></body></html>"'  /commit  'git commit -m "$v_m" && git push' /diff "git diff HEAD"
