@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Extracts an afterbuy XML file
+ * Extracts an afterbuy Theme XML file
  */
 $xml = simplexml_load_file('AfterBuyDump.xml');
 
