@@ -1,4 +1,4 @@
-myfunction() {
+autophp() {
   if [ "$PWD" != "$MYOLDPWD" ]; then
     MYOLDPWD="$PWD";
     BEFORE_BIN=`readlink /etc/alternatives/php`  
@@ -20,4 +20,4 @@ myfunction() {
   fi
 }
 
-export PROMPT_COMMAND=myfunction;$PROMPT_COMMAND
+export PROMPT_COMMAND=autophp;$PROMPT_COMMAND
