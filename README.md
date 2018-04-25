@@ -17,6 +17,11 @@ SelfScript Script Collection
 
     Rename Pictures (JPEG Photos) to contain the shot-date in the name. The use case is to pass those files to a photo printing company and have the date printed on the back.
 
+*   auto-php.sh
+
+    Automatically switch console PHP version to match composer.json
+    Source this in your .bashrc (`source SelfScripts/auto-php.sh`) and `cd` to a PHP project folder -> update-alternatives is called with the current PHP version from composer.json
+
 License
 =======
 
