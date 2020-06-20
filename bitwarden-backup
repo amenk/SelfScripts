@@ -2,12 +2,16 @@
 
 # CONFIGURATION
 EMAIL="$1"
+SERVER=${2:-bitwarden.com}
+WITHORGANIZATIONID="$3"
 
+echo $SERVER
 # README
 # This Script creates a 7z-encrypted backup of your Bitwarden Vault
 # Preperation
-# 1. Install the bw client tool
+# 1. Install the bw client tool and 7zip
 #  sudo snap install bw
+#  apt install p7zip-full
 # 2. Configure your EMAIL Address above
 
 # SCRIPT
@@ -15,11 +19,19 @@ EMAIL="$1"
 
 echo -n "Bitwarden Vault $EMAIL Password: "
 read -s PW
+echo "Thanks."
 
 umask 0077  # make files created reable by the current user only
 
+bw config server $SERVER
 SESSION=`bw login $EMAIL $PW --raw`
 bw export "$PW" --output bitwarden-export-$EMAIL.json --format json --session $SESSION
+
+if [ ! -z "$WITHORGANIZATIONID" ]
+then
+	bw export "$PW" --organizationid=$3 --output bitwarden-export-$EMAIL-$WITHORGANIZATIONID.json --format json --session $SESSION
+fi
+
 bw logout
-7z a bitwarden-export-$EMAIL.7z -p"$PW" bitwarden-export-$EMAIL.json
-rm bitwarden-export-$EMAIL.json
+7z a bitwarden-export-$EMAIL.7z -p"$PW" bitwarden-export-$EMAIL*.json
+rm bitwarden-export-$EMAIL*.json
