@@ -22,6 +22,10 @@ SelfScript Script Collection
     Automatically switch console PHP version to match composer.json
     Source this in your .bashrc (`source SelfScripts/auto-php.sh`) and `cd` to a PHP project folder -> update-alternatives is called with the current PHP version from composer.json
 
+*  bitwarden-backup
+
+    Script to backup your Bitwarden Vault, encrypted with your Master Passphrase and 7zip
+
 License
 =======
 
