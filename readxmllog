@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Read Log which contains some long XML lines and formats those
+# by ChatGPT :-)
+
+cat $1| python3 -c 'import sys,re,subprocess
+xml_decl=re.compile(r"<\?xml\b")
+root_re=re.compile(r"<([A-Za-z_][\w:.-]*)\b[^>]*?>")
+end_tmpl="</%s>"
+selfclose_tmpl=re.compile(r"<%s\\b[^>]*/>")
+buf=[]; inxml=False; root=None
+def flush(form=False):
+    global buf,inxml,root
+    if not buf: return
+    s="".join(buf)
+    if form:
+        p=subprocess.run(["xmllint","--format","-"],input=s.encode(),stdout=subprocess.PIPE,stderr=subprocess.DEVNULL)
+        sys.stdout.write(p.stdout.decode() if p.returncode==0 else s)
+    else:
+        sys.stdout.write(s)
+    buf=[]; inxml=False; root=None
+for line in sys.stdin:
+    if not inxml:
+        m=xml_decl.search(line)
+        if not m: sys.stdout.write(line); continue
+        pre=line[:m.start()]
+        if pre: sys.stdout.write(pre)
+        buf=[line[m.start():]]; inxml=True; root=None
+        continue
+    # already buffering XML
+    m=xml_decl.search(line)
+    if m:
+        # new XML starts before previous finished -> flush previous raw, start new
+        flush(form=False)
+        pre=line[:m.start()]
+        if pre: sys.stdout.write(pre)
+        buf=[line[m.start():]]; inxml=True; root=None
+        continue
+    buf.append(line)
+    if root is None:
+        s="".join(buf)
+        # find first element start tag after decl (skip comments/doctypes loosely by just searching)
+        rm=root_re.search(s)
+        if rm: root=rm.group(1)
+    if root:
+        s="".join(buf)
+        if end_tmpl%root in s or re.search(selfclose_tmpl.pattern%re.escape(root), s):
+            flush(form=True)
+flush(form=False)'
