@@ -1,0 +1,9 @@
+#!/bin/bash
+# Render Markdown to HTML and place it on the clipboard.
+# With an argument: render that Markdown file.
+# Without an argument: render the current clipboard text as Markdown.
+if [ -n "$1" ]; then
+    markdown "$1"
+else
+    xclip -o -selection clipboard | markdown
+fi | xclip -t text/html -selection clipboard
